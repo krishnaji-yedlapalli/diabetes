@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../utils/enums.dart';
 import '../urls.dart';
+import 'authentication_db_handler.dart';
 import 'diabetes_db_handler.dart';
 
 class OfflineApiHandler {
@@ -23,7 +24,9 @@ class OfflineApiHandler {
   Future<Response> requestSegregation(RequestOptions options) async {
     await initiateDataBase();
    switch(options.path){
-     case Urls.authenticateLogin:
+     case Urls.authenticateLogin: case Urls.registerUser:
+       return await AuthenticationDbHandler().executeDbOperations(options, _dataBase!);
+     case Urls.diabetesReading:
        return await DiabetesDbHandler().executeDbOperations(options, _dataBase!);
      default:
        throw DioError(requestOptions: options, type: DioErrorType.other, error: 'Not a valid service');
@@ -36,7 +39,7 @@ class OfflineApiHandler {
       join(await getDatabasesPath(), 'diabetes.db'),
       onCreate: (db, version) async {
         await db.execute(
-            'CREATE TABLE diabetes (appointmentDate TEXT PRIMARY KEY, appointments TEXT)');
+            'CREATE TABLE diabetesauth (mobileNumber INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT, age INTEGER, gender TEXT, password TEXT)');
       },
       version: 1,
     );

@@ -44,7 +44,7 @@ class BaseService {
           response = await dio.post(
             url,
             queryParameters: queryParameters,
-            data: body,
+            data: jsonEncode(body),
           );
           return response.data;
         case RequestType.delete:

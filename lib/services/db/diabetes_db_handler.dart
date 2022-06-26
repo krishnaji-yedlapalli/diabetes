@@ -30,22 +30,24 @@ class DiabetesDbHandler extends DbHandler{
   Future<Response> performCrudOperation(RequestOptions options) async {
     Database db = await _dataBase;
     var requestType = HelperMethods.enumFromString(RequestType.values, options.method.toLowerCase());
+    options.extra['isFromLocal'] = true;
     var response;
     try {
       switch(requestType){
-        case RequestType.post:
-          final List<Map<String, dynamic>> maps = await db.query('diabetes',
-          );
-          options.extra['isFromLocal'] = true;
+        case RequestType.get :
+          List<Map> result = await db.rawQuery('SELECT * FROM my_table WHERE mobileNumber=?', [options.data['mobileNumber']]);
+          response = {
+            'dataValue' : result,
+            'message' : 'Success'
+          };
           return Response(requestOptions: options, data: response, statusCode: 200);
-        case RequestType.put:
-        response =  await db.insert(
-          'diabetes',
-          jsonDecode(options.data),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-        options.extra['isFromLocal'] = true;
-        return Response(requestOptions: options, data: response, statusCode: 200);
+        case RequestType.post:
+          response =  await db.insert(
+            'diabetes',
+            jsonDecode(options.data),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+          return Response(requestOptions: options, data: response, statusCode: 200);
         break;
         default :
           return Response(requestOptions: options, data: response, statusCode: 405, statusMessage: 'Method Not Allowed');

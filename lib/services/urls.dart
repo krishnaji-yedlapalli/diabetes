@@ -8,7 +8,6 @@ class Urls {
   static const  String registerUser = 'registerUser';
 
   /// diabetes
-  static const  String storeReading = 'authenticateLogin';
-  static const  String fetchReading = 'authenticateLogin';
+  static const  String diabetesReading = 'diabetesReading';
 
 }

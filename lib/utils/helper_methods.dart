@@ -12,9 +12,10 @@ class HelperMethods {
     return values.firstWhere((type) => type.toString().split(".").last == value);
   }
 
-  static showSnackBarMessage(BuildContext context, String label) {
+  static showSnackBarMessage(BuildContext context, String label, {Color? backgroundColor}) {
     var snackBar = SnackBar(
       content: Text(label),
+      backgroundColor: backgroundColor,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
