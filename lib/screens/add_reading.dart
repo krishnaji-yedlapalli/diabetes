@@ -21,6 +21,12 @@ class _AddReadingState extends State<AddReading> with CommonMixin {
   var decimalValueCtrl = TextEditingController();
 
   @override
+  void initState() {
+    Provider.of<DiabetesProvider>(context, listen: false).clearDropDown();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

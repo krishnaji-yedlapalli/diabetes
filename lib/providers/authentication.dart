@@ -19,7 +19,7 @@ class AuthenticationProvider with ChangeNotifier {
      var response = await AuthenticationRepository().validateLoginCred(body);
      if(response?['dataValue'] != null){
        userDetails = response?['dataValue'];
-       setUserDetails(userDetails);
+       setUserDetails(context, userDetails);
        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage()), (route) => false);
      }else{
        HelperMethods.showSnackBarMessage(context, '${response?['message']}');
@@ -45,10 +45,16 @@ class AuthenticationProvider with ChangeNotifier {
   }
 
 
-  setUserDetails(Map? userDetails) async {
+  setUserDetails(BuildContext context, Map? userDetails) async {
     final prefs = await SharedPreferences.getInstance();
+    if(userDetails == null) {
+      prefs.remove('userDetails');
+      this.userDetails = null;
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => LoginPage()), (route) => false);
+      return;
+    }
     this.userDetails = userDetails;
-    if(userDetails != null) prefs.setString('userDetails', jsonEncode(userDetails));
+    prefs.setString('userDetails', jsonEncode(userDetails));
   }
 
  Future<Map?> getUserDetails() async {

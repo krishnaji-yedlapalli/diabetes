@@ -1,4 +1,5 @@
 
+import 'package:diabetes_tracker/models/reading.dart';
 import 'package:diabetes_tracker/services/base_service.dart';
 import 'package:flutter/material.dart';
 
@@ -8,21 +9,17 @@ import '../utils/enums.dart';
 class DiabetesRepository with BaseService {
 
 
-  Future<bool> addReading(Map body) async {
-    var status = false;
+  Future<Map?> addReading(Map body) async {
     var response = await makeRequest(url: Urls.diabetesReading, method: RequestType.post, body: body, storeResponseInDb: true);
-    if(response['dataValue'] != null){
-      status = true;
-    }
-    return status;
+    return response;
   }
 
-  Future<bool> fetchReadings(Map body) async {
-    var status = false;
-    var response = await makeRequest(url: Urls.diabetesReading, method: RequestType.get, body: body, storeResponseInDb: true);
-    if(response['dataValue'] != null){
-      status = true;
-    }
-    return status;
+  Future<List<Reading>> fetchReadings(Map<String, dynamic> query) async {
+    var list = <Reading>[];
+    var response = await makeRequest(url: Urls.diabetesReading, method: RequestType.get, queryParameters: query, storeResponseInDb: true);
+   if(response['dataValue'] != null){
+     list = response['dataValue'].map<Reading>((e) => Reading.fromJson(e)).toList();
+   }
+    return list;
   }
 }

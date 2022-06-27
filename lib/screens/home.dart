@@ -1,5 +1,10 @@
+import 'package:diabetes_tracker/providers/authentication.dart';
+import 'package:diabetes_tracker/providers/diabetes.dart';
 import 'package:diabetes_tracker/screens/add_reading.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'view_reading_history.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,6 +19,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Page'),
+        actions: [
+          IconButton(onPressed: () => Provider.of<AuthenticationProvider>(context, listen:  false).setUserDetails(context,null), icon: Icon(Icons.logout))
+        ],
       ),
       body: Center(
         child: Column(
@@ -30,7 +38,7 @@ class _HomePageState extends State<HomePage> {
               style: TextButton.styleFrom(
                 textStyle: const TextStyle(fontSize: 20),
               ),
-              onPressed: (){},
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DiabetesHistory())),
               child: const Text('View Reading'),
             ),
           ],

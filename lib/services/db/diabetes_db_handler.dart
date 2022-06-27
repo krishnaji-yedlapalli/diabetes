@@ -33,12 +33,13 @@ class DiabetesDbHandler extends DbHandler{
     options.extra['isFromLocal'] = true;
     var response;
     try {
-      options.data = jsonDecode(options.data);
-      List<Map> result = await db.rawQuery('SELECT * FROM diabetesreading WHERE mobileNumber=?', [options.data?['mobileNumber']]);
+      if(options.data != null) options.data = jsonDecode(options.data);
+      var mobileNumber = options.data != null ? options.data['mobileNumber'] : options.queryParameters['mobileNumber'];
+      List<Map> result = await db.rawQuery('SELECT * FROM diabetesreading WHERE mobileNumber=?', [mobileNumber]);
       switch(requestType){
         case RequestType.get :
           response = {
-            'dataValue' : result,
+            'dataValue' : result.isNotEmpty ? jsonDecode(result.first['readingData']) : [],
             'message' : 'Success'
           };
           return Response(requestOptions: options, data: response, statusCode: 200);
@@ -50,7 +51,7 @@ class DiabetesDbHandler extends DbHandler{
             data =  {
               'mobileNumber' : options.data['mobileNumber'],
               'readingData' : jsonEncode(readingList)
-            };;
+            };
 
           }else{
             data = {
@@ -64,7 +65,10 @@ class DiabetesDbHandler extends DbHandler{
             data,
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
-          return Response(requestOptions: options, data: response, statusCode: 200);
+          return Response(requestOptions: options, data: {
+            'dataValue' : response,
+            'message' : "Successfully added"
+          }, statusCode: 200);
         default :
           return Response(requestOptions: options, data: response, statusCode: 405, statusMessage: 'Method Not Allowed');
       }
