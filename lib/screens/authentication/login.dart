@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> with CommonMixin {
       return;
     } else {
       Provider.of<AuthenticationProvider>(context, listen:  false).validateLogin(context, {
-        'mobileNumber' : mobileNumberCtrl.text.trim(),
+        'mobileNumber' : int.parse(mobileNumberCtrl.text.trim()),
         'password' : pwdCtrl.text.trim()
       });
     }

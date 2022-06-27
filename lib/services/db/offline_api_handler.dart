@@ -38,9 +38,13 @@ class OfflineApiHandler {
     _dataBase ??= openDatabase(
       join(await getDatabasesPath(), 'diabetes.db'),
       onCreate: (db, version) async {
-        await db.execute(
-            'CREATE TABLE diabetesauth (mobileNumber INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT, age INTEGER, gender TEXT, password TEXT)');
-      },
+        Batch batch = db.batch();
+        // await db.execute(
+        //     'CREATE TABLE diabetesauth (mobileNumber INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT, age INTEGER, gender TEXT, password TEXT)');
+     batch.execute('CREATE TABLE diabetesauth (mobileNumber INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT, age INTEGER, gender TEXT, password TEXT)');
+     batch.execute('CREATE TABLE diabetesreading (mobileNumber INTEGER PRIMARY KEY, readingData TEXT)');
+     await batch.commit();
+     },
       version: 1,
     );
   }

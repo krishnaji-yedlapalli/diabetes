@@ -33,13 +33,14 @@ class AuthenticationDbHandler extends DbHandler{
     var requestType = HelperMethods.enumFromString(RequestType.values, options.method.toLowerCase());
     var response;
     try {
+      options.data = jsonDecode(options.data);
       switch(requestType){
         case RequestType.post:
-          List<Map> result = await db.rawQuery('SELECT * FROM diabetesauth WHERE mobileNumber=?', [options.data['mobileNumber']]);
+          List<Map> result = await db.rawQuery('SELECT * FROM diabetesauth WHERE mobileNumber=?', [options.data?['mobileNumber']]);
           switch(options.path){
             case Urls.authenticateLogin :
-              if(result.isEmpty || result.first['password'] == options.data['password']) return Response(requestOptions: options, data: {"dataValue" : null, "message" : "User doesn't exists or Invalid Password"}, statusCode: 401);
-              else return Response(requestOptions: options, data: {"dataValue" : result.first }, statusCode: 200);
+              if(result.isEmpty || result.first['password'] != options.data['password']) return Response(requestOptions: options, data: {"dataValue" : null, "message" : "User doesn't exists or Invalid Password"}, statusCode: 401);
+              else return Response(requestOptions: options, data: {"dataValue" : result.first as Map<String, dynamic> }, statusCode: 200);
             case Urls.registerUser :
               if(result.isNotEmpty) return Response(requestOptions: options, data: {"dataValue" : null, "message" : "User Already exists"}, statusCode: 409);
               var data = options.data as Map<String, Object?>;
@@ -48,7 +49,7 @@ class AuthenticationDbHandler extends DbHandler{
                 data,
                 conflictAlgorithm: ConflictAlgorithm.replace,
               );
-              return Response(requestOptions: options, data: response, statusCode: 200);
+              return Response(requestOptions: options, data: {"dataValue" : data, "message" : "Successfully Registered"}, statusCode: 200);
           }
           final List<Map<String, dynamic>> maps = await db.query('diabetes',
           );

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 mixin CommonMixin {
 
   String? passwordValidator(String? value) {
@@ -43,6 +45,19 @@ mixin CommonMixin {
       return 'Value is required';
     }
     return null;
+  }
+
+  DropdownMenuItem dropDownMenuItems(String id, String value) {
+    return DropdownMenuItem(
+      value: id,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Text(
+          '$value',
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 
 }

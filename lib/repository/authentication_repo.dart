@@ -2,7 +2,6 @@
 import 'package:diabetes_tracker/services/base_service.dart';
 import 'package:flutter/material.dart';
 
-import '../provider.dart';
 import '../services/urls.dart';
 import '../utils/enums.dart';
 
@@ -15,11 +14,7 @@ class AuthenticationRepository with BaseService {
   }
 
   Future<Map?> userRegistration(Map body) async {
-    var userRegistration;
     var response = await makeRequest(url: Urls.registerUser, method: RequestType.post, body: body, storeResponseInDb: true);
-    if(response?['dataValue'] != null){
-      userRegistration = response['dataValue'];
-    }
-    return userRegistration;
+    return response;
   }
 }

@@ -2,7 +2,6 @@
 import 'package:diabetes_tracker/services/base_service.dart';
 import 'package:flutter/material.dart';
 
-import '../provider.dart';
 import '../services/urls.dart';
 import '../utils/enums.dart';
 

@@ -33,22 +33,38 @@ class DiabetesDbHandler extends DbHandler{
     options.extra['isFromLocal'] = true;
     var response;
     try {
+      options.data = jsonDecode(options.data);
+      List<Map> result = await db.rawQuery('SELECT * FROM diabetesreading WHERE mobileNumber=?', [options.data?['mobileNumber']]);
       switch(requestType){
         case RequestType.get :
-          List<Map> result = await db.rawQuery('SELECT * FROM my_table WHERE mobileNumber=?', [options.data['mobileNumber']]);
           response = {
             'dataValue' : result,
             'message' : 'Success'
           };
           return Response(requestOptions: options, data: response, statusCode: 200);
         case RequestType.post:
+          var data;
+          if(result.isNotEmpty){
+            var readingList = jsonDecode(result.first['readingData']);
+             readingList.add(options.data);
+            data =  {
+              'mobileNumber' : options.data['mobileNumber'],
+              'readingData' : jsonEncode(readingList)
+            };;
+
+          }else{
+            data = {
+              'mobileNumber' : options.data['mobileNumber'],
+               'readingData' : jsonEncode([options.data])
+    };
+
+          }
           response =  await db.insert(
-            'diabetes',
-            jsonDecode(options.data),
+            'diabetesreading',
+            data,
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
           return Response(requestOptions: options, data: response, statusCode: 200);
-        break;
         default :
           return Response(requestOptions: options, data: response, statusCode: 405, statusMessage: 'Method Not Allowed');
       }

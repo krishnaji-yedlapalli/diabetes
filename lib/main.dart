@@ -1,15 +1,17 @@
+import 'dart:async';
+
 import 'package:diabetes_tracker/screens/authentication/login.dart';
+import 'package:diabetes_tracker/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'provider.dart';
 import 'providers/authentication.dart';
+import 'providers/diabetes.dart';
 import 'services/interceptors.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   initiateInterceptors();
-  CoreDataHolder().getLocalData();
   runApp(const MyApp());
 }
 
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider()),
+        ChangeNotifierProvider<DiabetesProvider>(create: (_) => DiabetesProvider()),
     ],
     child: MaterialApp(
         title: 'Flutter Demo',
@@ -37,10 +40,32 @@ class MyApp extends StatelessWidget {
               errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
               focusedErrorBorder: const OutlineInputBorder()),
         ),
-        home: const LoginPage(),
+        home: UserLoginStatus(),
       ),
     );
   }
+}
 
+class UserLoginStatus extends StatelessWidget {
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: FutureBuilder(
+        future: Provider.of<AuthenticationProvider>(context, listen:  false).getUserDetails(),
+          builder: (context, AsyncSnapshot snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return CircularProgressIndicator();
+              default:
+                if (snapshot.hasError) {
+                  return RichText(text: TextSpan(text: 'Failed to load the user data'));
+                } else {
+                  if (snapshot.data != null) return HomePage();
+                  else return LoginPage();
+                }
+            }
+          })
+    );
+  }
 }

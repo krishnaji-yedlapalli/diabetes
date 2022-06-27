@@ -19,9 +19,10 @@ class _DropDownState extends State<DropDown> {
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.withOpacity(0.6), width: 1),
+          border: Border.all(color: Colors.black, width: 1),
+          borderRadius: BorderRadius.all(Radius.circular(5.0))
       ),
-      height: 35,
+      height: 50,
       width: widget.width,
       alignment: Alignment.center,
       child: DropdownButton<dynamic>(
