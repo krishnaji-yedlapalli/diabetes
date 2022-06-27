@@ -53,8 +53,16 @@ class _AddReadingState extends State<AddReading> with CommonMixin {
                       ctrl: decimalValueCtrl,
                       labelText: 'Enter Value',
                       validator: decimalValueValidator,
-                      inputType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputType: TextInputType.numberWithOptions(decimal: true, signed: false),
+                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          try {
+                            final text = newValue.text;
+                            if (text.isNotEmpty) double.parse(text);
+                            return newValue;
+                          } catch (e) {}
+                          return oldValue;
+                        })],
                       maxLength: 10),
                   ElevatedButton(
                     style: TextButton.styleFrom(

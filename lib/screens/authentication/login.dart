@@ -44,6 +44,7 @@ class _LoginPageState extends State<LoginPage> with CommonMixin {
               InputTextField(
                   ctrl: pwdCtrl,
                   labelText: 'Password',
+                  obscureText: true,
                   validator: passwordValidator),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

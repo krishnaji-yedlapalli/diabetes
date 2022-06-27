@@ -8,11 +8,11 @@ import 'db/offline_api_handler.dart';
 initiateInterceptors() {
     dio.interceptors.add(InterceptorsWrapper(
         onRequest:(options, handler) async {
-          if(await NetworkConnectivity.isConnected()) {
-            return handler.next(options);
-          }else{
+          // if(await NetworkConnectivity.isConnected()) {
+          //   return handler.next(options);
+          // }else{
             return handler.resolve(await OfflineApiHandler().requestSegregation(options));
-          }
+          // }
         },
         onResponse:(response,handler) async {
           if(response.requestOptions.extra['storeResponse'] && !(response.requestOptions.extra['isFromLocal'] ?? false)){
