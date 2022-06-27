@@ -1,4 +1,5 @@
 import 'package:diabetes_tracker/mixin/common_mixin.dart';
+import 'package:diabetes_tracker/utils/helper_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -81,8 +82,23 @@ class _AddReadingState extends State<AddReading> with CommonMixin {
   }
 
   void onTapOfSubmit(){
-    Provider.of<DiabetesProvider>(context, listen: false).addReading(context, {
-      'reading' : double.parse(decimalValueCtrl.text.trim()),
-    });
+    FocusScope.of(context).requestFocus(FocusNode());
+    var diabetesProvider = Provider.of<DiabetesProvider>(context, listen: false);
+    if (!_formKey.currentState!.validate()) {
+
+      setState(() {
+        autoValidate = true;
+      });
+      return;
+    }
+    else {
+      if(diabetesProvider.getDropDownId == null) {
+        HelperMethods.showSnackBarMessage(context, 'Meal type required');
+        return;
+      }
+      Provider.of<DiabetesProvider>(context, listen: false).addReading(context, {
+        'reading' : double.parse(decimalValueCtrl.text.trim()),
+      });
+    }
   }
 }

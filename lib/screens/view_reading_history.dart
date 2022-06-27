@@ -59,15 +59,18 @@ class _DiabetesHistoryState extends State<DiabetesHistory> {
   }
 
   Widget _buildReading(Reading reading) {
-      var diabetesProvider = Provider.of<DiabetesProvider>(context, listen: false);
-      var style = TextStyle(fontSize: 13, fontWeight: FontWeight.w600);
-      return ListTile(
-        title: Text(reading.mealType == 'beforeMeals' ? 'Before Meals (Fasting)' : 'After Meals',  style: style),
-        subtitle: Text('${DateFormat('yyyy-MM-dd kk:mm').format(DateTime.parse(reading.dateTime))}', style: style),
-        isThreeLine: true,
-        leading:  Text('${reading.reading} \n mg/dl',  style: style),
-        trailing: Text('${diabetesProvider.getDiagnosis(reading)}',  style: style),
-        tileColor: Colors.black12,
-      );
-    }
+    var diabetesProvider = Provider.of<DiabetesProvider>(context, listen: false);
+    var style = TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.indigo);
+    return ListTile(
+      title: Text(reading.mealType == 'beforeMeals' ? 'Before Meals (Fasting)' : 'After Meals',  style: style),
+      subtitle: Text('${DateFormat('yyyy-MM-dd kk:mm').format(DateTime.parse(reading.dateTime))}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black)),
+      isThreeLine: true,
+      leading:  Text('${reading.reading} \n mg/dl',  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.purple), textAlign: TextAlign.center),
+      trailing: Padding(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: Text('${diabetesProvider.getDiagnosis(reading)}',  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
+      ),
+      tileColor: Colors.grey.withOpacity(0.18),
+    );
+  }
 }

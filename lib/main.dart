@@ -39,6 +39,9 @@ class MyApp extends StatelessWidget {
               focusedBorder: const OutlineInputBorder(),
               errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
               focusedErrorBorder: const OutlineInputBorder()),
+            radioTheme: RadioThemeData(
+              fillColor: MaterialStateProperty.all(Color.fromRGBO(132, 70, 113, 1)),
+            )
         ),
         home: UserLoginStatus(),
       ),
