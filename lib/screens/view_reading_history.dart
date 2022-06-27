@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:diabetes_tracker/models/reading.dart';
 import 'package:diabetes_tracker/utils/helper_methods.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/diabetes.dart';
@@ -58,8 +59,15 @@ class _DiabetesHistoryState extends State<DiabetesHistory> {
   }
 
   Widget _buildReading(Reading reading) {
-    return ListTile(
-      title: Text('${reading.mealType}'),
-    );
-  }
+      var diabetesProvider = Provider.of<DiabetesProvider>(context, listen: false);
+      var style = TextStyle(fontSize: 13, fontWeight: FontWeight.w600);
+      return ListTile(
+        title: Text(reading.mealType == 'beforeMeals' ? 'Before Meals (Fasting)' : 'After Meals',  style: style),
+        subtitle: Text('${DateFormat('yyyy-MM-dd kk:mm').format(DateTime.parse(reading.dateTime))}', style: style),
+        isThreeLine: true,
+        leading:  Text('${reading.reading} \n mg/dl',  style: style),
+        trailing: Text('${diabetesProvider.getDiagnosis(reading)}',  style: style),
+        tileColor: Colors.black12,
+      );
+    }
 }

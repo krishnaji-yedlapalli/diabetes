@@ -13,12 +13,12 @@ class DiabetesProvider with ChangeNotifier {
   late StreamController<List<Reading>> readingStreamController;
   List dropDownItems = [
     {
-      'id' : 'beforeMeals',
-      'name' : 'Before Meals'
+      'id': 'beforeMeals',
+      'name': 'Before Meals'
     },
     {
-      'id' : 'afterMeals',
-      'name' : 'After Meals'
+      'id': 'afterMeals',
+      'name': 'After Meals'
     }
   ];
 
@@ -27,39 +27,42 @@ class DiabetesProvider with ChangeNotifier {
   String? get getDropDownId => _selectedDropDownId;
 
   @override
-  dispose(){
+  dispose() {
     super.dispose();
     readingStreamController.close();
   }
 
   Future<void> addReading(BuildContext context, Map body) async {
-
-    try{
+    try {
       body.addAll({
-        'mobileNumber' : Provider.of<AuthenticationProvider>(context, listen:  false).userDetails?['mobileNumber'],
-        'mealType' : _selectedDropDownId,
-        'dateTime' : DateTime.now().toString()
+        'mobileNumber': Provider
+            .of<AuthenticationProvider>(context, listen: false)
+            .userDetails?['mobileNumber'],
+        'mealType': _selectedDropDownId,
+        'dateTime': DateTime.now().toString()
       });
       var response = await DiabetesRepository().addReading(body);
       HelperMethods.showSnackBarMessage(context, '${response?['message']}');
-      if(response?['dataValue'] != null){
+      if (response?['dataValue'] != null) {
         Navigator.pop(context);
         return;
       }
-    } catch(e,s){
+    } catch (e, s) {
 
     }
   }
 
   Future<void> fetchReading(BuildContext context) async {
-    try{
+    try {
       Map<String, dynamic> query = {
-        'mobileNumber' : Provider.of<AuthenticationProvider>(context, listen:  false).userDetails?['mobileNumber'],
+        'mobileNumber': Provider
+            .of<AuthenticationProvider>(context, listen: false)
+            .userDetails?['mobileNumber'],
       };
       var response = await DiabetesRepository().fetchReadings(query);
       response = response.reversed.toList();
       readingStreamController.add(response);
-    } catch(e,s){
+    } catch (e, s) {
       readingStreamController.addError(e.toString());
     }
   }
@@ -75,7 +78,33 @@ class DiabetesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  clearDropDown(){
+  clearDropDown() {
     _selectedDropDownId = null;
   }
+
+  String? getDiagnosis(Reading readings) {
+    if (readings.mealType == 'beforeMeals') {
+      if (readings.reading < 100.0) {
+        return 'Normal';
+      }
+      else if (readings.reading > 100.0 && readings.reading < 125.0) {
+        return 'Prediabetes';
+      }
+      else {
+        return 'Diabetic';
+      }
+    }
+    else {
+      if (readings.reading < 140.0) {
+        return 'Normal';
+      }
+      else if (readings.reading > 140.0 && readings.reading < 199.0) {
+        return 'Prediabetes';
+      }
+      else {
+        return 'Diabetic';
+      }
+    }
+  }
+
 }
