@@ -1,4 +1,4 @@
-package com.diabetes.diabetes_tracker
+package com.sample.wireviewer
 
 import io.flutter.embedding.android.FlutterActivity
 
