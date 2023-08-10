@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 class HelperMethods {
 
-  static const kQuoteReplacer = "¿*¿*¿*¿*";
-
   static T? enumFromString<T>(Iterable<T> values, String value) {
     return values.firstWhere((type) => type.toString().split(".").last == value);
   }

@@ -1,17 +1,12 @@
-import 'dart:async';
-
-import 'package:diabetes_tracker/screens/authentication/login.dart';
 import 'package:diabetes_tracker/screens/home.dart';
+import 'package:diabetes_tracker/variants/variants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'providers/authentication.dart';
-import 'providers/diabetes.dart';
-import 'services/interceptors.dart';
+import 'providers/home_prov.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  initiateInterceptors();
+  Variant().configure(VariantTypes.wire);
   runApp(const MyApp());
 }
 
@@ -23,16 +18,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider()),
-        ChangeNotifierProvider<DiabetesProvider>(create: (_) => DiabetesProvider()),
+        ChangeNotifierProvider<HomeProvider>(create: (_) => HomeProvider()),
     ],
     child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          primaryColor:  Colors.blue,
+          primarySwatch: Colors.green,
+          primaryColor:  Colors.green,
           primaryColorLight: Colors.white,
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(132, 70, 113, 1)),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
           inputDecorationTheme: InputDecorationTheme(
               contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               enabledBorder: const OutlineInputBorder(),
@@ -40,35 +34,11 @@ class MyApp extends StatelessWidget {
               errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
               focusedErrorBorder: const OutlineInputBorder()),
             radioTheme: RadioThemeData(
-              fillColor: MaterialStateProperty.all(Color.fromRGBO(132, 70, 113, 1)),
+              fillColor: MaterialStateProperty.all(Colors.lightGreenAccent),
             )
         ),
-        home: UserLoginStatus(),
+        home: HomePage(),
       ),
-    );
-  }
-}
-
-class UserLoginStatus extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
-        future: Provider.of<AuthenticationProvider>(context, listen:  false).getUserDetails(),
-          builder: (context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return CircularProgressIndicator();
-              default:
-                if (snapshot.hasError) {
-                  return RichText(text: TextSpan(text: 'Failed to load the user data'));
-                } else {
-                  if (snapshot.data != null) return HomePage();
-                  else return LoginPage();
-                }
-            }
-          })
     );
   }
 }

@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -39,6 +39,21 @@ android {
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+    }
+
+    flavorDimensions "app"
+
+    productFlavors {
+
+        wire {
+            dimension "app"
+            applicationId "com.sample.wireviewer"
+        }
+
+        simpsons {
+            dimension "app"
+            applicationId "com.sample.simpsonsviewer"
+        }
     }
 
     buildTypes {
@@ -56,4 +71,10 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+android {
+       lintOptions {
+            checkReleaseBuilds false
+       }
 }
